@@ -1,0 +1,29 @@
+= Futures
+  
+  require 'futures'
+  
+  class ITakeALongTime
+    include Futures
+  
+    future :test
+    
+    def initialize
+      Thread.new {
+        sleep 10
+        self.test = 123
+      }
+    end
+    
+  end
+  
+  n = ITakeALongTime.new
+  puts n.test
+  
+  val = Futures::Value.new
+  
+  Thread.new do
+    sleep 5
+    val.write('hello you')
+  end
+  
+  puts "val.read is #{val.read(10)}"
