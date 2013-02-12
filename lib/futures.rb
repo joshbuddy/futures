@@ -5,7 +5,7 @@ module Futures
     TimeoutError = Class.new(RuntimeError)
 
     def read(timeout = nil)
-      unless @value
+      unless defined?(@value)
         @write = Thread.new { Thread.stop }
         @write.join(timeout) or raise(TimeoutError.new)
       end
@@ -17,7 +17,7 @@ module Futures
       @write.wakeup if @write
     end
   end
-  
+
   def self.included(cls)
     cls.class_eval "
       class << self
@@ -44,7 +44,7 @@ module Futures
       end
     end
   end
-  
+
 end
 
 
